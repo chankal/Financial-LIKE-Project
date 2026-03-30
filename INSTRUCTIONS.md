@@ -1,176 +1,238 @@
-# LIKE Project – AI Workflow Instructions
-
-This file enables a seamless AI workflow. An LLM (Claude, GPT-4, Gemini, etc.)
-can ingest this document to fully understand how to build, run, test, and extend
-the LIKE – Obsolescence in Stock Market QA Systems project.
+# INSTRUCTIONS.md — AI Workflow Guide
+> This file is intended to be ingested by an LLM (Claude, GPT, Gemini, etc.) to understand how to build, run, and test this project end-to-end.
 
 ---
 
-## Project Goal
+## Project Overview
 
-Compare a **Baseline QA system** (GPT-4 with static historical data) against a
-**RAG-based QA system** (GPT-4 with live-retrieved stock data) to quantify how
-quickly financial question-answering systems become factually obsolete.
+**Project Name:** LIKE — Obsolescence in Stock Market QA Systems  
+**Goal:** Investigate how quickly financial question-answering systems become outdated as stock market conditions change.  
+**Approach:** Compare two QA systems:
+1. **Baseline QA** — uses static historical stock data + LLM knowledge only (no live data)
+2. **RAG-based QA** *(planned)* — retrieves fresh financial data at query time to reduce knowledge staleness
+
+**Research Question:** How does LLM knowledge obsolescence manifest in financial QA, and can RAG mitigate it?
 
 ---
 
 ## Repository Structure
 
+The repository is organized with a dedicated folder per system. Currently the baseline system is implemented; a `rag/` folder is planned for the next phase.
+
 ```
 Financial-LIKE-Project/
-├── data/                    # Raw CSV files downloaded from Yahoo Finance
-│   ├── AAPL.csv
-│   ├── MSFT.csv
-│   ├── GOOGL.csv
-│   └── AMZN.csv
-├── processed_data/          # Cleaned CSVs produced by prepocess_data.py (auto-created)
-│   └── <TICKER>_processed.csv
-├── sample_data/             # Small sample CSVs for testing without an API key
-├── baseline_results.jsonl   # Auto-generated log of baseline QA runs
-├── eval_baseline_<TICKER>.csv  # Auto-generated batch evaluation results
-├── evaluation_comparison.csv   # Auto-generated comparison report
-├── data_collection.py       # Downloads historical stock data via yfinance
-├── prepocess_data.py        # Cleans and standardises raw CSVs
-├── baseline_qa.py           # Baseline QA system + built-in evaluation metrics
-├── evaluate.py              # Standalone evaluation / comparison framework
-├── config.py                # Centralised configuration (tickers, date range, etc.)
-├── requirements.txt         # Python dependencies
-├── INSTRUCTIONS.md          # This file
-└── README.md
+├── baseline/
+│   ├── data/                  # Raw CSV stock data (downloaded by data_collection.py)
+│   ├── sample_data/           # Sample CSVs for testing without running data collection
+│   ├── processed_data/        # Output of prepocess_data.py (auto-created at runtime)
+│   ├── data_collection.py     # Downloads stock data from Yahoo Finance via yfinance
+│   ├── prepocess_data.py      # Cleans and normalizes raw CSVs → processed_data/
+│   ├── baseline_qa.py         # Baseline QA system — supports OpenAI (GPT-4) or Ollama
+│   ├── config.py              # Configuration: tickers, date ranges, LLM backend choice
+│   └── requirements.txt       # Python dependencies for the baseline system
+├── rag/                       # (Planned) RAG-based QA system
+├── INSTRUCTIONS.md            # This file
+└── README.md                  # Project summary
 ```
+
+> All commands in this guide should be run from inside the `baseline/` directory unless otherwise noted.
 
 ---
 
 ## Prerequisites
 
-| Requirement | Version  |
-|-------------|----------|
-| Python      | 3.10+    |
-| pip         | any      |
-| OpenAI key  | required |
+- **Python:** 3.9 or higher
+- **Internet access:** Required for `data_collection.py` to pull from Yahoo Finance
+- **LLM Backend (choose one):**
 
-```bash
-# 1. Clone
-git clone https://github.com/chankal/Financial-LIKE-Project.git
-cd Financial-LIKE-Project
+| Option | When to use | What's needed |
+|---|---|---|
+| **OpenAI** | You have an API key and want a hosted model (GPT-4) | `OPENAI_API_KEY` environment variable |
+| **Ollama** | You want to run a model locally for free, no API key needed | [Ollama](https://ollama.com) installed and a model pulled (e.g. `llama3`) |
 
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Set your OpenAI API key
-export OPENAI_API_KEY="sk-..."   # Linux / macOS
-# setx OPENAI_API_KEY "sk-..."   # Windows
-```
-
-`requirements.txt` should include at minimum:
-```
-openai>=1.0.0
-pandas
-yfinance
-faiss-cpu
-numpy
-```
+Both backends are supported by `baseline_qa.py`. The active backend is configured in `config.py`.
 
 ---
 
-## Step-by-Step Workflow
-
-### Step 1 – Collect raw stock data
+## Environment Setup
 
 ```bash
+# 1. Clone the repository
+git clone https://github.com/chankal/Financial-LIKE-Project.git
+cd Financial-LIKE-Project/baseline
+
+# 2. (Recommended) Create and activate a virtual environment
+python -m venv venv
+source venv/bin/activate        # macOS/Linux
+venv\Scripts\activate           # Windows
+
+# 3. Install dependencies
+pip install -r requirements.txt
+```
+
+### LLM Backend Setup
+
+**Option A — OpenAI (hosted, requires API key):**
+```bash
+export OPENAI_API_KEY=your_key_here   # macOS/Linux
+set OPENAI_API_KEY=your_key_here      # Windows
+```
+Then set `LLM_BACKEND = "openai"` in `config.py`.
+
+**Option B — Ollama (local, no API key required):**
+1. Install Ollama from https://ollama.com
+2. Pull a model: `ollama pull llama3`
+3. Start the Ollama server: `ollama serve` (runs on `http://localhost:11434` by default)
+4. Set `LLM_BACKEND = "ollama"` in `config.py` and set `OLLAMA_MODEL` to your chosen model name
+
+---
+
+## Running the Project (Step-by-Step)
+
+### Step 1 — Collect Stock Data
+
+Downloads historical OHLCV data from Yahoo Finance and saves it to `baseline/data/`.
+
+```bash
+# Run from inside the baseline/ directory
 python data_collection.py
 ```
 
-Downloads OHLCV data for AAPL, MSFT, GOOGL, and AMZN from Yahoo Finance
-(2019-01-01 to present) and stores each ticker as `data/<TICKER>.csv`.
+- Output: CSV files in `data/` named by ticker (e.g., `data/AAPL.csv`)
+- Tickers and date ranges are configured in `config.py`
+- **Skip this step** if using the provided `sample_data/` folder (see below)
 
-### Step 2 – Preprocess the data
+---
+
+### Step 2 — Preprocess Data
+
+Cleans and normalizes raw CSVs, keeping only `Date, Open, High, Low, Close, Volume` columns.
 
 ```bash
 python prepocess_data.py
 ```
 
-Reads every CSV in `data/`, drops rows with missing values, retains
-`[Date, Open, High, Low, Close, Volume]`, and writes clean files to
-`processed_data/<TICKER>_processed.csv`.
+- Reads from: `data/`
+- Writes to: `processed_data/` (auto-created if it doesn't exist)
+- Output files are named `{TICKER}_processed.csv` (e.g., `processed_data/AAPL_processed.csv`)
 
-### Step 3 – Run the Baseline QA system (interactive)
+> ⚠️ Note: The script filename is `prepocess_data.py` (one 'r' — this is a known typo in the repo).
+
+---
+
+### Step 3 — Run the Baseline QA System
+
+Loads the last 30 rows of processed stock data for a given ticker and answers a natural-language question using your configured LLM backend (OpenAI or Ollama).
 
 ```bash
 python baseline_qa.py
 ```
 
-Prompts for a ticker and a natural-language question. Constructs a prompt
-containing the last 30 rows of processed data and sends it to GPT-4. Prints
-the answer **and** evaluation metrics, then appends a JSON record to
-`baseline_results.jsonl`.
+You will be prompted for:
+1. A stock ticker (e.g., `AAPL`, `MSFT`, `TSLA`)
+2. A natural language question about that stock
 
-### Step 4 – Run a batch evaluation of the baseline
-
-```bash
-python baseline_qa.py --batch AAPL
+**Example interaction:**
+```
+Enter stock ticker (AAPL, MSFT, etc): AAPL
+Enter your question: What was Apple's price trend last month?
 ```
 
-Runs five standard evaluation questions for `AAPL` (replace with any ticker)
-and saves a summary table to `eval_baseline_AAPL.csv`.
+- The script reads `processed_data/AAPL_processed.csv`
+- Passes the last 30 rows as context to the LLM
+- Prints the model's answer to stdout
 
-### Step 5 – Evaluate and compare systems
-
-```bash
-# Baseline only
-python evaluate.py --baseline baseline_results.jsonl
-
-# Baseline vs RAG (once rag_results.jsonl exists)
-python evaluate.py --baseline baseline_results.jsonl --rag rag_results.jsonl
-```
-
-Outputs a summary table and writes `evaluation_comparison.csv`.
+**With OpenAI:** uses the `openai` Python client and calls GPT-4  
+**With Ollama:** sends requests to the local Ollama server at `http://localhost:11434`; make sure `ollama serve` is running before executing this script
 
 ---
 
-## Key Design Decisions (for LLM context)
+## Using Sample Data (No Internet Required)
 
-| Decision | Rationale |
-|----------|-----------|
-| GPT-4 with `temperature=0` | Deterministic outputs enable reproducible evaluation |
-| Last 30 rows as context window | Balances prompt length vs recency |
-| JSONL logging | Each run is one line; easy to parse, diff, and analyse |
-| `price_error_pct` as primary metric | Directly measures factual obsolescence |
-| `hallucination_flag` | Catches prices invented outside the context window |
-| `staleness_days` | Measures data freshness relative to today |
+If you want to test without running `data_collection.py`, copy the sample files:
+
+```bash
+cp sample_data/*.csv data/
+python prepocess_data.py
+python baseline_qa.py
+```
 
 ---
 
-## Evaluation Metrics Reference
+## Configuration
 
-| Metric | Description |
-|--------|-------------|
-| `price_error_pct` | Absolute % deviation of model's stated price from actual closing price |
-| `factual_hit` | 1 if error ≤ 5%, else 0 |
-| `hallucination` | 1 if stated price is not within 1% of any value in context window |
-| `staleness_days` | Days since the last row of the processed dataset |
-| `response_length` | Word count of model answer |
+Edit `config.py` to change:
+- **Tickers** to collect/process
+- **Date range** for historical data
+- **File paths** for data and processed output directories
+
+---
+
+## Key Files for an LLM to Understand
+
+All paths are relative to the `baseline/` directory.
+
+| File | Purpose |
+|---|---|
+| `baseline_qa.py` | Core QA logic — builds context from CSV data and calls the configured LLM backend |
+| `prepocess_data.py` | Data pipeline — cleans raw CSVs into the format expected by `baseline_qa.py` |
+| `data_collection.py` | Data source — fetches OHLCV data from Yahoo Finance via `yfinance` |
+| `config.py` | All configurable parameters: tickers, paths, dates, and LLM backend selection |
+| `requirements.txt` | All Python package dependencies |
+
+---
+
+## Testing
+
+There are no automated tests at this stage. To manually verify each component works:
+
+```bash
+# Run from inside baseline/
+
+# Verify preprocessing runs cleanly
+python prepocess_data.py
+ls processed_data/   # Should show *_processed.csv files
+
+# Verify baseline QA produces a response
+python baseline_qa.py
+# Enter: AAPL
+# Enter: What was the closing price trend over the last 30 days?
+```
+
+Expected: A natural-language answer based on the last 30 rows of OHLCV data, generated by whichever backend is active in `config.py`.
 
 ---
 
 ## Common Issues
 
-| Problem | Fix |
-|---------|-----|
-| `FileNotFoundError: processed_data/…` | Run `prepocess_data.py` first |
-| `AuthenticationError` from OpenAI | Check `OPENAI_API_KEY` environment variable |
-| Empty `data/` folder | Run `data_collection.py` first |
-| yfinance returns no data | Ticker may be delisted; check `config.py` ticker list |
+| Problem | Likely Cause | Fix |
+|---|---|---|
+| `FileNotFoundError: processed_data/AAPL_processed.csv` | Preprocessing not run yet | Run `python prepocess_data.py` first |
+| `AuthenticationError` from OpenAI | Missing or invalid API key | Set `OPENAI_API_KEY` env variable |
+| `Connection refused` on `localhost:11434` | Ollama server not running | Run `ollama serve` in a separate terminal |
+| `model not found` from Ollama | Model not pulled yet | Run `ollama pull <model_name>` (e.g. `ollama pull llama3`) |
+| `ModuleNotFoundError` | Dependencies not installed | Run `pip install -r requirements.txt` from inside `baseline/` |
+| `KeyError: 'Date'` in preprocessing | Raw CSV format unexpected | Check that `data_collection.py` ran successfully and produced valid CSVs |
 
 ---
 
-## Next Steps (RAG System)
+## Planned Extensions (RAG System)
 
-The upcoming RAG pipeline (`rag_qa.py`) will:
-1. Embed the user's question with `text-embedding-3-large`
-2. Query a FAISS vector index built from processed stock documents
-3. Retrieve the top-k most relevant chunks
-4. Pass retrieved chunks + question to GPT-4 for generation
-5. Log results to `rag_results.jsonl` in the same schema as `baseline_results.jsonl`
+The next phase of this project will introduce a RAG-based QA system that:
+- Retrieves real-time or recent stock data at query time
+- Augments the LLM prompt with fresh context
+- Allows direct comparison of answer quality vs. the static baseline
 
-Once `rag_results.jsonl` exists, run `evaluate.py --baseline … --rag …` to compare.
+When added, it will follow the same pattern: a single runnable Python script that prompts for a ticker and question.
+
+---
+
+## Dependencies (from baseline/requirements.txt)
+
+Key libraries used:
+- `yfinance` — Yahoo Finance data download
+- `pandas` — Data manipulation and CSV handling
+- `openai` — OpenAI API client (used when `LLM_BACKEND = "openai"`)
+- `ollama` or `requests` — Local model inference (used when `LLM_BACKEND = "ollama"`)
+
+Install all with: `pip install -r requirements.txt` (from inside the `baseline/` directory)
