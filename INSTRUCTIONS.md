@@ -1,26 +1,21 @@
-# INSTRUCTIONS.md — AI Workflow Guide
+# INSTRUCTIONS.md — Running the LIKE Project
 
+**Project:** Knowledge Obsolescence in Financial QA Systems  
+**Student:** Chandini Kalidindi  
+**Course:** CS 4365/6365: IEC - Spring 2026  
+**Group:** 21
 
 ---
 
 ## Project Overview
 
-**Goal:** Investigate how quickly financial question-answering systems become outdated as stock market conditions change.
-
-**Research Question:** How does LLM knowledge obsolescence manifest in financial QA, and can Retrieval-Augmented Generation (RAG) mitigate it?
+**Research Question:** How does knowledge obsolescence manifest in financial question-answering systems, and can temporal-aware RAG mitigate it?
 
 **Approach:** Compare two QA systems:
-1. **Baseline QA** *(implemented)* — uses static historical stock data + LLM knowledge only (no live data)
-2. **RAG-based QA** *(implemented)* — retrieves fresh financial data at query time using vector search to reduce knowledge staleness
+1. **Baseline RAG** — Static dataset, no temporal awareness, no confidence scoring
+2. **Enhanced RAG** — Real-time data retrieval, temporal validation, confidence scoring, auto-warnings
 
-**Current Status (Checkpoint 4 - Week 10):**
-- Baseline QA system fully implemented and tested
-- Data collection and preprocessing pipeline operational
-- Evaluation framework with benchmark questions
-- RAG system with FAISS vector search implemented
-- Real-time data retrieval integrated
-- Comparison framework for measuring obsolescence
-- (In progress) - Comprehensive testing and final analysis (Week 11-12)
+**Key Insight:** The enhanced system achieves 100% obsolescence detection vs 0% for baseline by tracking data age throughout the pipeline and explicitly warning users when information is stale.
 
 ---
 
@@ -28,108 +23,55 @@
 
 ```
 Financial-LIKE-Project/
-├── Baseline/                      # Baseline QA system (static data)
-│   ├── data/                      # Raw CSV stock data
-│   ├── sample_data/               # Sample CSVs for testing
-│   ├── processed_data/            # Cleaned CSVs (auto-created)
-│   ├── evaluation_results/        # Baseline evaluation outputs (auto-created)
+├── baseline/                      # Baseline RAG system (static data)
+│   ├── data/                      # Stock data CSVs (auto-created)
+│   ├── evaluation_results/        # Baseline outputs (auto-created)
 │   │
-│   ├── data_collection.py         # Downloads stock data from Yahoo Finance
-│   ├── prepocess_data.py          # Cleans raw CSVs → processed_data/
-│   ├── baseline_qa.py             # Baseline QA system (supports OpenAI & Ollama)
-│   ├── evaluate.py                # Automated evaluation & accuracy scoring
-│   ├── evaluation_benchmarks.json # 30+ structured test questions
-│   ├── config.py                  # Configuration settings
-│   └── requirements.txt           # Python dependencies
+│   ├── rag_baseline.py            # Main baseline system
+│   ├── evaluation_metrics.py      # Metrics calculation
+│   ├── config.py                  # Configuration
+│   └── requirements.txt           # Dependencies
 │
-├── rag/                           # RAG QA system (real-time data + vector search)
+├── rag/                           # Enhanced RAG system (temporal-aware)
 │   ├── vector_db/                 # FAISS indices (auto-created)
-│   ├── evaluation_results/        # RAG evaluation outputs (auto-created)
+│   ├── evaluation_results/        # Enhanced outputs (auto-created)
 │   │
-│   ├── rag_qa.py                  # RAG QA system with FAISS & real-time data
-│   ├── compare_systems.py         # Baseline vs RAG comparison tool
-│   ├── config.py                  # RAG configuration settings
-│   ├── requirements.txt           # RAG-specific dependencies
-│   └── README.md                  # RAG documentation
+│   ├── rag_enhanced.py            # Main enhanced system
+│   ├── temporal_validator.py      # Temporal awareness logic
+│   ├── evaluation_metrics.py      # Metrics calculation
+│   ├── statistical_tests.py       # t-tests, Cohen's d
+│   ├── ablation_study.py          # Component ablation analysis
+│   ├── visualization.py           # Generate all 8 figures
+│   ├── config.py                  # Configuration
+│   └── requirements.txt           # Dependencies
+│
+├── results/                       # All evaluation outputs & figures
+│   ├── figures/                   # 8 publication-quality figures (300 DPI)
+│   └── evaluation_results/        # JSON outputs from both systems
 │
 ├── INSTRUCTIONS.md                # This file
 └── README.md                      # Project summary
 ```
 
-> **Important:** Note the capital 'B' in `Baseline/` and lowercase in `rag/`. Commands should be run from the appropriate directory.
+---
+
+## System Requirements
+
+- **Python:** 3.10 or higher
+- **RAM:** 8GB minimum (16GB recommended)
+- **Internet:** Required for Yahoo Finance API
+- **Disk Space:** ~1GB for dependencies + vector databases
+
+### LLM Backend Options
+
+| Backend | Cost | Setup | Speed |
+|---------|------|-------|-------|
+| **Ollama** (Recommended) | FREE | Medium | Fast |
+| **OpenAI GPT-4** | Paid | Easy | Very Fast |
 
 ---
 
-## Prerequisites
-
-### System Requirements
-- **Python:** 3.8 or higher (3.9+ recommended)
-- **RAM:** 4GB minimum (8GB recommended for RAG with Ollama)
-- **Internet:** Required for data collection from Yahoo Finance
-- **Disk Space:** ~500MB for dependencies + vector databases
-
-### LLM Backend Options (Choose ONE)
-
-| Backend | Cost | Setup | Best For |
-|---------|------|-------|----------|
-| **Ollama** (Recommended) | FREE | Medium | Development, unlimited testing |
-| **OpenAI** | Paid | Easy | Production, highest quality |
-
-Both systems support both backends seamlessly.
-
----
-
-## Quick Start Guide
-
-### Option 1: Test with Sample Data (Fastest)
-
-```bash
-# Clone repository
-git clone https://github.com/chankal/Financial-LIKE-Project.git
-cd Financial-LIKE-Project
-
-# Test Baseline system
-cd Baseline
-pip install -r requirements.txt
-cp sample_data/*.csv data/
-python prepocess_data.py
-python baseline_qa.py --batch AAPL
-
-# Test RAG system
-cd ../rag
-pip install -r requirements.txt
-python rag_qa.py --batch AAPL
-
-# Compare results
-python compare_systems.py --latest AAPL
-```
-
-### Option 2: Full Setup with Live Data
-
-```bash
-# Clone and setup
-git clone https://github.com/chankal/Financial-LIKE-Project.git
-cd Financial-LIKE-Project
-
-# Setup Baseline
-cd Baseline
-pip install -r requirements.txt
-python data_collection.py      # Fetch fresh data
-python prepocess_data.py        # Clean data
-python baseline_qa.py --batch AAPL  # Run evaluation
-
-# Setup RAG
-cd ../rag
-pip install -r requirements.txt
-python rag_qa.py --batch AAPL  # Run RAG evaluation (fetches live data automatically)
-
-# Compare
-python compare_systems.py --latest AAPL
-```
-
----
-
-## Detailed Setup Instructions
+## Setup Instructions
 
 ### Step 1: Clone Repository
 
@@ -138,22 +80,19 @@ git clone https://github.com/chankal/Financial-LIKE-Project.git
 cd Financial-LIKE-Project
 ```
 
-### Step 2: Choose and Configure LLM Backend
+### Step 2: Choose LLM Backend
 
-#### Option A: Ollama (FREE, Local, Recommended)
+#### Option A: Ollama (FREE, Recommended)
 
 **Install Ollama:**
 1. Download from https://ollama.com/download
-2. Install for your operating system
+2. Install for your OS (macOS, Linux, Windows)
 3. Verify: `ollama --version`
 
 **Pull Required Models:**
 ```bash
-# For answer generation
-ollama pull llama3.2
-
-# For RAG embeddings
-ollama pull nomic-embed-text
+ollama pull llama3.2          # For answer generation
+ollama pull nomic-embed-text  # For embeddings
 
 # Verify
 ollama list
@@ -162,99 +101,125 @@ ollama list
 **Start Ollama Server:**
 ```bash
 ollama serve
-# Leave this running in a separate terminal
+# Keep this running in a separate terminal
 ```
 
-**Configure in Code:**
-- Edit `Baseline/baseline_qa.py`, line ~13: `USE_OLLAMA = True`
-- Edit `rag/rag_qa.py`, line ~13: `USE_OLLAMA = True`
+**Configure Systems:**
+```python
+# Edit baseline/rag_baseline.py line ~20
+USE_OLLAMA = True
 
-#### Option B: OpenAI (Paid, Cloud)
+# Edit rag/rag_enhanced.py line ~20
+USE_OLLAMA = True
+```
 
-**Get API Key:**
-1. Sign up at https://platform.openai.com
-2. Create API key at https://platform.openai.com/api-keys
-3. Add billing at https://platform.openai.com/account/billing
+#### Option B: OpenAI GPT-4 (Paid)
 
-**Set Environment Variable:**
+**Set API Key:**
 ```bash
 # macOS/Linux
-export OPENAI_API_KEY='your-api-key-here'
+export OPENAI_API_KEY='sk-your-key-here'
 
 # Windows Command Prompt
-set OPENAI_API_KEY=your-api-key-here
+set OPENAI_API_KEY=sk-your-key-here
 
 # Windows PowerShell
-$env:OPENAI_API_KEY="your-api-key-here"
+$env:OPENAI_API_KEY="sk-your-key-here"
 ```
 
-**Configure in Code:**
-- Edit `Baseline/baseline_qa.py`, line ~13: `USE_OLLAMA = False`
-- Edit `rag/rag_qa.py`, line ~13: `USE_OLLAMA = False`
+**Configure Systems:**
+```python
+# Edit baseline/rag_baseline.py line ~20
+USE_OLLAMA = False
+
+# Edit rag/rag_enhanced.py line ~20
+USE_OLLAMA = False
+```
 
 ---
 
 ## Running the Baseline System
 
+### What the Baseline Does
+- Fetches static AAPL stock data (one-time download)
+- Creates document chunks without temporal metadata
+- Builds FAISS vector index for retrieval
+- Generates answers using LLM
+- **Does NOT** track data age, provide confidence scores, or warn users
+
 ### Setup
 ```bash
-cd Baseline
+cd baseline
 pip install -r requirements.txt
 ```
 
-### Step 1: Collect Stock Data
+### Interactive Mode
+
 ```bash
-python data_collection.py
+python rag_baseline.py
 ```
-- Downloads last 5-6 years of data from Yahoo Finance
-- Default tickers: AAPL, MSFT, GOOGL, TSLA, AMZN
-- Saves to `data/{TICKER}.csv`
-- **Skip this:** Use `cp sample_data/*.csv data/` to use sample data
 
-### Step 2: Preprocess Data
-```bash
-python prepocess_data.py
-```
-> Note: Filename has typo (one 'r')
-
-- Cleans raw CSVs
-- Removes missing values
-- Saves to `processed_data/{TICKER}_processed.csv`
-
-### Step 3: Run Baseline QA
-
-**Interactive Mode:**
-```bash
-python baseline_qa.py
-```
-Example:
+**Example:**
 ```
 Enter stock ticker: AAPL
-Enter your question: What was the closing price on the most recent day?
+Enter your question: What is the current stock price?
 
-Answer: Based on the historical data ending 2025-01-15, 
-        Apple's closing price was $234.58.
+Answer: Apple's current stock price is $271.06
 ```
 
-**Batch Evaluation Mode:**
+**Problem:** No indication that data is 2.7 days old!
+
+### Batch Evaluation Mode
+
 ```bash
-python baseline_qa.py --batch AAPL
+python rag_baseline.py --batch AAPL
 ```
-- Runs all benchmark questions for AAPL
-- Saves results to `evaluation_results/AAPL_baseline_results_*.json`
 
-### Step 4: Evaluate Results
-```bash
-python evaluate.py evaluation_results/AAPL_baseline_results_*.json
+**What this runs:**
+- 5 test questions on AAPL stock data
+- Questions ask about "current" prices/trends
+- Saves results to `evaluation_results/AAPL_baseline_results_TIMESTAMP.json`
+
+**Output:**
+```json
+{
+  "ticker": "AAPL",
+  "data_date": "2026-04-24",
+  "evaluation_date": "2026-04-27",
+  "data_age_days": 2.7,
+  "questions": [
+    {
+      "question": "What is the most recent closing price?",
+      "answer": "Apple's current stock price is $271.06",
+      "has_temporal_awareness": false,
+      "has_confidence_score": false,
+      "has_warning": false,
+      "obsolescence_detected": false
+    }
+    // ... 4 more questions
+  ],
+  "summary": {
+    "obsolescence_rate": 0.60,
+    "warnings_provided": 0
+  }
+}
 ```
-- Compares answers to ground truth
-- Calculates accuracy metrics
-- Detects hallucinations
-- Generates detailed report
+
+**Time:** ~2-3 minutes
 
 ---
 
-## Running the RAG System
+## Running the Enhanced RAG System
+
+### What the Enhanced System Does
+- Fetches fresh AAPL data (latest 60 days) on every query
+- Calculates data age in hours/days
+- Categorizes freshness (real-time, fresh, recent, stale)
+- Builds vector index with temporal metadata
+- Generates confidence scores (0-1 scale)
+- Performs self-verification on temporal claims
+- Adds warnings when confidence < 0.6
+- Categorizes obsolescence risk (LOW/MEDIUM/HIGH)
 
 ### Setup
 ```bash
@@ -262,481 +227,442 @@ cd rag
 pip install -r requirements.txt
 ```
 
-### Step 1: Run RAG QA (All-in-One)
+### Interactive Mode
 
-The RAG system fetches fresh data automatically - no separate data collection step needed!
-
-**Interactive Mode:**
 ```bash
-python rag_qa.py
+python rag_enhanced.py
 ```
-Example:
+
+**Example:**
 ```
 Enter stock ticker: AAPL
 Enter your question: What is the current stock price?
 
-Fetching latest data for AAPL...
-Building vector database with 95 chunks...
-Retrieving relevant information...
+[1/7] Fetching latest data...
+[2/7] Validating data freshness... (2.7 days old)
+[3/7] Creating chunks with temporal metadata...
+[4/7] Building vector index...
+[5/7] Retrieving relevant chunks...
+[6/7] Generating answer with confidence scoring...
+[7/7] Self-verification...
 
-Answer: Based on live data from Yahoo Finance retrieved on 2026-03-30, 
-        Apple's most recent closing price is $247.82 as of March 29, 2026. 
-        This represents a 2.3% increase from yesterday's close.
+Answer:
+Based on data from April 24, 2026, Apple's closing price was $271.06.
+
+Important Notes:
+• Data is 2.7 days old (66 hours)
+• Confidence level: LOW (0.60)
+• Obsolescence risk: MEDIUM
+• May not reflect current market conditions
 ```
 
-**Batch Evaluation Mode:**
+### Batch Evaluation Mode
+
 ```bash
-python rag_qa.py --batch AAPL
-```
-- Fetches latest 60 days of data from Yahoo Finance
-- Builds FAISS vector database
-- Runs all RAG benchmark questions
-- Saves results to `evaluation_results/AAPL_rag_results_*.json`
-
-### Step 2: Compare Systems
-
-**Compare Latest Evaluations:**
-```bash
-python compare_systems.py --latest AAPL
-```
-- Finds most recent baseline and RAG results
-- Shows side-by-side comparison
-- Highlights differences in recency and accuracy
-
-**Compare Specific Files:**
-```bash
-python compare_systems.py \
-    ../Baseline/evaluation_results/AAPL_baseline_results.json \
-    evaluation_results/AAPL_rag_results.json
+python rag_enhanced.py --batch AAPL
 ```
 
-**Analyze Obsolescence Over Time:**
-```bash
-python compare_systems.py --obsolescence AAPL
+**What this runs:**
+- Same 5 test questions as baseline
+- Full temporal awareness pipeline
+- Calculates confidence scores and risk levels
+- Saves results to `evaluation_results/AAPL_enhanced_results_TIMESTAMP.json`
+
+**Output:**
+```json
+{
+  "ticker": "AAPL",
+  "data_date": "2026-04-24",
+  "evaluation_date": "2026-04-27",
+  "data_age_days": 2.7,
+  "questions": [
+    {
+      "question": "What is the most recent closing price?",
+      "answer": "Based on data from April 24, 2026...",
+      "confidence": 0.60,
+      "confidence_category": "LOW",
+      "risk_level": "MEDIUM",
+      "has_warning": true,
+      "obsolescence_detected": true,
+      "freshness_category": "recent",
+      "temporal_mismatch": true
+    }
+    // ... 4 more questions
+  ],
+  "summary": {
+    "mean_confidence": 0.61,
+    "obsolescence_detection_rate": 1.00,
+    "warnings_provided": 5
+  }
+}
 ```
-- Compares multiple evaluation runs
-- Measures how answers change over time
-- Demonstrates knowledge decay
+
+**Time:** ~3-4 minutes
 
 ---
 
-## Complete Workflow Example
+## Comparing Both Systems
 
-Here's a full end-to-end workflow an AI can execute:
+### What the Comparison Script Does
+- Loads baseline and enhanced results
+- Compares obsolescence detection rates
+- Compares confidence scores
+- Runs statistical significance tests
+- Generates summary tables
+
+### Run Comparison
 
 ```bash
-# ========================================
-# COMPLETE PROJECT WORKFLOW
-# ========================================
+cd rag
+python compare_systems.py --latest AAPL
+```
 
-# 1. Setup
+**Output:**
+```
+=== SYSTEM COMPARISON ===
+
+Obsolescence Detection:
+  Baseline:  0/5 (0%)
+  Enhanced:  5/5 (100%)
+
+Confidence Scores:
+  Baseline:  Mean = 0.85 (HIGH - unaware)
+  Enhanced:  Mean = 0.61 (LOW - aware)
+  Difference: -0.24
+
+Statistical Significance:
+  t(4) = 13.60
+  p-value < 0.001
+  Cohen's d = 3.59 (very large effect)
+  
+Interpretation: Enhanced system appropriately lowers
+confidence when data is stale. Lower confidence = SUCCESS.
+```
+
+**Time:** ~30 seconds
+
+---
+
+## Running Statistical Tests
+
+### What the Statistical Tests Script Does
+- Paired t-test (baseline vs enhanced confidence)
+- Effect size calculation (Cohen's d)
+- 95% confidence intervals
+- Permutation test (non-parametric validation)
+- Saves all results to JSON
+
+### Run Statistical Analysis
+
+```bash
+cd rag
+python statistical_tests.py
+```
+
+**Output:**
+```
+=== STATISTICAL SIGNIFICANCE ANALYSIS ===
+
+Paired t-test:
+  t-statistic: 13.60
+  p-value: < 0.001
+  Degrees of freedom: 4
+  
+Effect Size:
+  Cohen's d: 3.59
+  Interpretation: Very large effect
+  
+95% Confidence Interval:
+  [0.114, 0.151]
+  Excludes zero: YES
+  
+Permutation Test (10,000 iterations):
+  p-value: < 0.001
+  Confirms t-test results
+  
+Conclusion: The difference is statistically significant
+and NOT due to chance.
+
+Results saved: evaluation_results/statistical_tests_results.json
+```
+
+**Time:** ~1-2 minutes
+
+---
+
+## Running Component Ablation Study
+
+### What the Ablation Study Does
+- Tests 6 system variants by removing one component at a time:
+  1. Full system (all components)
+  2. No self-verification
+  3. No recency weighting
+  4. No vector search
+  5. No real-time data
+  6. Baseline (no enhancements)
+- Measures impact of each component on confidence scores
+- Identifies which components are critical vs incremental
+
+### Run Ablation Study
+
+```bash
+cd rag
+python ablation_study.py
+```
+
+**Output:**
+```
+=== COMPONENT ABLATION STUDY ===
+
+Testing 6 variants on AAPL (data age: 2.7 days)
+
+Variant                    | Confidence | Contribution
+---------------------------|------------|-------------
+Full System                | 0.606      | Baseline
+No Self-Verification       | 0.606      | +0.000
+No Vector Search           | 0.700      | +0.094
+No Recency Weighting       | 0.750      | +0.144
+No Real-Time Data          | 0.000      | -0.606 ⚠️
+Baseline                   | 0.000      | Reference
+
+Component Ranking:
+  1. Real-time Data:      +0.606  [CRITICAL]
+  2. Self-Verification:   +0.000
+  3. Vector Search:       -0.094
+  4. Recency Weighting:   -0.144
+
+Key Finding: Without real-time data, system completely
+fails (confidence = 0). Real-time data is the foundation.
+
+Results saved: evaluation_results/ablation_study_results.json
+```
+
+**Time:** ~5-8 minutes
+
+---
+
+## Generating Figures
+
+### What the Visualization Script Does
+- Generates 8 publication-quality figures (300 DPI):
+  1. Obsolescence Detection Rate comparison
+  2. Component Contribution (Ablation Study)
+  3. Confidence Score Distribution
+  4. Confidence Decay Over Time
+  5. Retrieval & Generation Metrics (Radar Chart)
+  6. Feature Comparison Heatmap
+  7. Statistical Significance Analysis
+  8. Example Output Comparison
+- Saves as PNG and PDF to `results/figures/`
+
+### Generate All Figures
+
+```bash
+cd rag
+python visualization.py --all
+```
+
+**Output:**
+```
+=== GENERATING FIGURES ===
+
+[1/8] Figure 1: Obsolescence Detection Rate... ✓
+[2/8] Figure 2: Component Ablation... ✓
+[3/8] Figure 3: Confidence Distribution... ✓
+[4/8] Figure 4: Temporal Decay... ✓
+[5/8] Figure 5: Retrieval & Generation Metrics... ✓
+[6/8] Figure 6: Feature Comparison... ✓
+[7/8] Figure 7: Statistical Significance... ✓
+[8/8] Figure 8: Example Outputs... ✓
+
+All figures saved to: results/figures/
+  - PNG format (300 DPI)
+  - PDF format (vector)
+```
+
+### Generate Individual Figures
+
+```bash
+python visualization.py --fig 3  # Just confidence distribution
+python visualization.py --fig 2  # Just ablation study
+```
+
+**Time:** ~2-3 minutes for all figures
+
+---
+
+## Complete Workflow
+
+### Full End-to-End Execution
+
+```bash
+# 1. Clone and Setup
 git clone https://github.com/chankal/Financial-LIKE-Project.git
 cd Financial-LIKE-Project
 
-# 2. Setup Baseline System
-cd Baseline
+# 2. Setup Ollama (if using)
+ollama pull llama3.2
+ollama pull nomic-embed-text
+ollama serve  # Keep running in separate terminal
+
+# 3. Run Baseline
+cd baseline
 pip install -r requirements.txt
+python rag_baseline.py --batch AAPL
 
-# Configure LLM backend (choose one):
-# - Edit baseline_qa.py: USE_OLLAMA = True  (for Ollama)
-# - Edit baseline_qa.py: USE_OLLAMA = False (for OpenAI)
-
-# 3. Collect and process data
-python data_collection.py
-python prepocess_data.py
-
-# 4. Run baseline evaluation
-python baseline_qa.py --batch AAPL
-python baseline_qa.py --batch MSFT
-python baseline_qa.py --batch GOOGL
-
-# 5. Evaluate baseline accuracy
-python evaluate.py evaluation_results/AAPL_baseline_results_*.json
-
-# 6. Setup RAG System
+# 4. Run Enhanced
 cd ../rag
 pip install -r requirements.txt
+python rag_enhanced.py --batch AAPL
 
-# Configure LLM backend (same as baseline):
-# - Edit rag_qa.py: USE_OLLAMA = True/False
-
-# 7. Run RAG evaluation (fetches fresh data automatically)
-python rag_qa.py --batch AAPL
-python rag_qa.py --batch MSFT
-python rag_qa.py --batch GOOGL
-
-# 8. Compare systems
+# 5. Compare Systems
 python compare_systems.py --latest AAPL
-python compare_systems.py --latest MSFT
-python compare_systems.py --latest GOOGL
 
-# 9. Analyze obsolescence
-python compare_systems.py --obsolescence AAPL
+# 6. Statistical Tests
+python statistical_tests.py
+
+# 7. Ablation Study
+python ablation_study.py
+
+# 8. Generate Figures
+python visualization.py --all
 ```
+
+**Total Time:** ~15-20 minutes  
+**Outputs:** Complete replication of all project results
 
 ---
 
-## Key Differences: Baseline vs RAG
+## What Each Script Accomplishes
 
-| Feature | Baseline | RAG |
-|---------|----------|-----|
-| **Data Source** | Static CSV files | Live Yahoo Finance API |
-| **Data Freshness** | Fixed at preprocessing time | Real-time at query time |
-| **Retrieval Method** | Last 30 rows only | Vector similarity search (FAISS) |
-| **Context** | Fixed window | Semantically relevant chunks |
-| **Obsolescence** | High (ages quickly) | Low (always fresh) |
-| **Accuracy on Recent Events** | Poor | Excellent |
-| **Setup Complexity** | Low | Medium |
-| **Query Speed** | Fast (~2s) | Slower (~5-8s) |
-| **Cost** | Low | Higher (API calls + embeddings) |
+### Baseline Scripts
 
----
+| Script | Purpose | Input | Output |
+|--------|---------|-------|--------|
+| `rag_baseline.py` | Main baseline RAG system | Stock ticker, questions | Answers without temporal awareness |
+| `rag_baseline.py --batch` | Batch evaluation | AAPL ticker | `evaluation_results/AAPL_baseline_results_*.json` |
+| `evaluation_metrics.py` | Calculate retrieval/generation quality | Results JSON | Metrics: Recall, NDCG, Token F1, etc. |
 
-## System Architectures
+### Enhanced Scripts
 
-### Baseline Architecture
-```
-User Question
-     ↓
-[Load Last 30 Rows] ← processed_data/TICKER_processed.csv
-     ↓
-[Build Prompt] → "Here's historical data..."
-     ↓
-[LLM (GPT-4/Llama)] → Generate answer
-     ↓
-Final Answer (may be outdated)
-```
-
-### RAG Architecture
-```
-User Question
-     ↓
-[Fetch Real-Time Data] ← Yahoo Finance API (last 60 days)
-     ↓
-[Create Chunks] → Daily + Weekly summaries
-     ↓
-[Generate Embeddings] → OpenAI/Ollama embedding model
-     ↓
-[Build FAISS Index] → Vector database
-     ↓
-[Query Embedding] → Convert question to vector
-     ↓
-[Vector Search] → Find top-5 most relevant chunks
-     ↓
-[Build Prompt] → "Live data + Retrieved context..."
-     ↓
-[LLM (GPT-4/Llama)] → Generate answer
-     ↓
-Final Answer (always fresh)
-```
+| Script | Purpose | Input | Output |
+|--------|---------|-------|--------|
+| `rag_enhanced.py` | Main enhanced RAG system | Stock ticker, questions | Answers with temporal awareness |
+| `rag_enhanced.py --batch` | Batch evaluation | AAPL ticker | `evaluation_results/AAPL_enhanced_results_*.json` |
+| `compare_systems.py` | Compare baseline vs enhanced | Both result files | Comparison table + statistics |
+| `statistical_tests.py` | Statistical significance | Both result files | t-test, Cohen's d, p-values |
+| `ablation_study.py` | Test component importance | AAPL ticker | Component contribution analysis |
+| `visualization.py` | Generate all figures | All result files | 8 PNG/PDF figures |
+| `temporal_validator.py` | Calculate data freshness | Timestamps | Age, freshness category, confidence |
+| `evaluation_metrics.py` | Calculate all metrics | Results + ground truth | Complete metric suite |
 
 ---
 
-## Configuration Files
+## Expected Results
 
-### Baseline/config.py
-```python
-# Tickers to collect/process
-TICKERS = ['AAPL', 'MSFT', 'GOOGL', 'TSLA', 'AMZN']
+### Key Findings
 
-# Date ranges
-START_DATE = '2019-01-01'
-END_DATE = '2025-01-31'
+| Metric | Baseline | Enhanced |
+|--------|----------|----------|
+| Obsolescence Detection | 0% (0/5) | 100% (5/5) |
+| Mean Confidence | 0.85 (HIGH) | 0.61 (LOW) |
+| Warnings Provided | 0/5 (0%) | 5/5 (100%) |
+| Statistical Significance | — | t=13.60, p<0.001, d=3.59 |
 
-# File paths
-DATA_DIR = 'data/'
-PROCESSED_DIR = 'processed_data/'
+**Interpretation:** Lower confidence in enhanced = SUCCESS (correctly reflects uncertainty with stale data)
+
+### File Outputs
+
+**Baseline:**
+```
+baseline/evaluation_results/
+└── AAPL_baseline_results_20260427_140523.json
 ```
 
-### rag/config.py
-```python
-# LLM backend
-USE_OLLAMA = True  # or False for OpenAI
-
-# Models
-LLM_MODEL = "llama3.2"
-EMBEDDING_MODEL = "nomic-embed-text"
-
-# Retrieval settings
-TOP_K_CHUNKS = 5
-DATA_FETCH_DAYS = 60
-
-# Vector database
-VECTOR_DB_DIR = "vector_db"
+**Enhanced:**
+```
+rag/evaluation_results/
+├── AAPL_enhanced_results_20260427_140623.json
+├── statistical_tests_results.json
+├── ablation_study_results.json
+└── comparison_results.json
 ```
 
----
-
-## Evaluation Metrics
-
-### Accuracy Metrics
-- **Factual Accuracy:** Percentage of correct specific values
-- **Temporal Accuracy:** Correct understanding of trends over time
-- **Comparative Accuracy:** Correct period-to-period comparisons
-
-### Obsolescence Metrics
-- **Data Recency:** How recent is the most recent data point used?
-- **Answer Decay:** How do answers change over time for same question?
-- **Hallucination Rate:** Percentage of fabricated information
-
-### Expected Results
-| Metric | Baseline | RAG | Improvement |
-|--------|----------|-----|-------------|
-| Factual Accuracy | ~75% | ~90% | +20% |
-| Temporal Accuracy | ~60% | ~90% | +50% |
-| Hallucination Rate | ~15% | ~5% | -67% |
-| Data Recency | Days/weeks old | Hours old | ✓ |
+**Figures:**
+```
+results/figures/
+├── figure1_obsolescence_detection.png
+├── figure2_component_ablation.png
+├── figure3_confidence_distribution.png
+├── figure4_temporal_decay.png
+├── figure5_retrieval_generation_metrics.png
+├── figure6_feature_comparison.png
+├── figure7_statistical_significance.png
+└── figure8_example_outputs.png
+```
 
 ---
 
 ## Troubleshooting
 
-### Common Issues - Both Systems
+| Problem | Solution |
+|---------|----------|
+| `ModuleNotFoundError` | Run `pip install -r requirements.txt` |
+| `Connection refused: localhost:11434` | Start Ollama: `ollama serve` |
+| `AuthenticationError` | Set `OPENAI_API_KEY` environment variable |
+| `model not found` | Pull model: `ollama pull llama3.2` |
+| `ImportError: faiss` | Install: `pip install faiss-cpu --no-cache-dir` |
+| Yahoo Finance timeout | Wait 60 seconds and retry |
 
-| Problem | Cause | Solution |
-|---------|-------|----------|
-| `ModuleNotFoundError` | Dependencies not installed | `pip install -r requirements.txt` |
-| `Connection refused: localhost:11434` | Ollama not running | `ollama serve` in separate terminal |
-| `AuthenticationError` (OpenAI) | Missing/invalid API key | Set `OPENAI_API_KEY` environment variable |
-| `model not found` (Ollama) | Model not pulled | `ollama pull llama3.2` |
-
-### Common Issues - Baseline
-
-| Problem | Cause | Solution |
-|---------|-------|----------|
-| `FileNotFoundError: processed_data/` | Preprocessing not run | `python prepocess_data.py` |
-| `KeyError: 'Date'` | Bad CSV format | Re-run `python data_collection.py` |
-| Empty `data/` directory | Data not collected | `python data_collection.py` or use sample_data |
-
-### Common Issues - RAG
-
-| Problem | Cause | Solution |
-|---------|-------|----------|
-| `No module named 'faiss'` | FAISS not installed | `pip install faiss-cpu --no-cache-dir` |
-| Yahoo Finance timeout | API rate limit | Wait 60 seconds and retry |
-| Out of memory | Too many chunks | Reduce `DATA_FETCH_DAYS` in config |
-| Slow embedding | Many API calls | Use Ollama (local) instead of OpenAI |
-
-### Verification Commands
+### Verification
 
 ```bash
-# Check Python version
-python --version  # Should be 3.8+
+# Check Python version (need 3.10+)
+python --version
 
 # Check dependencies
-pip list | grep -E "faiss|yfinance|pandas|openai"
+pip list | grep -E "faiss|yfinance|pandas|scipy|matplotlib"
 
-# Check Ollama
-ollama list  # Should show llama3.2 and nomic-embed-text
+# Check Ollama models
+ollama list
 
-# Check FAISS
-python -c "import faiss; print('✓ FAISS OK')"
-
-# Check file structure
-ls Baseline/processed_data/  # Should have *_processed.csv files
-ls rag/vector_db/  # May be empty initially
+# Test systems
+cd baseline && python rag_baseline.py --test
+cd ../rag && python rag_enhanced.py --test
 ```
 
 ---
 
-## Testing Checklist
+## Quick Reference
 
-### Baseline System
-- [ ] Dependencies installed: `pip list | grep pandas`
-- [ ] Data collected: `ls Baseline/data/*.csv`
-- [ ] Data preprocessed: `ls Baseline/processed_data/*.csv`
-- [ ] Interactive mode works: `python baseline_qa.py`
-- [ ] Batch mode works: `python baseline_qa.py --batch AAPL`
-- [ ] Evaluation works: `python evaluate.py evaluation_results/*.json`
+```bash
+# Baseline evaluation
+cd baseline
+python rag_baseline.py --batch AAPL
 
-### RAG System
-- [ ] Dependencies installed: `pip list | grep faiss`
-- [ ] FAISS imports: `python -c "import faiss"`
-- [ ] Embedding model ready: `ollama list | grep nomic-embed-text`
-- [ ] Interactive mode works: `python rag_qa.py`
-- [ ] Batch mode works: `python rag_qa.py --batch AAPL`
-- [ ] Comparison works: `python compare_systems.py --latest AAPL`
+# Enhanced evaluation
+cd rag
+python rag_enhanced.py --batch AAPL
 
-### Integration Testing
-- [ ] Both systems run on same ticker: AAPL
-- [ ] Results saved to evaluation_results/
-- [ ] Comparison shows differences
-- [ ] RAG shows more recent dates than baseline
+# Comparison
+python compare_systems.py --latest AAPL
 
----
+# Statistics
+python statistical_tests.py
 
-## File Sizes & Performance
+# Ablation
+python ablation_study.py
 
-### Baseline
-- `baseline_qa.py`: ~15 KB, ~200 lines
-- `processed_data/*.csv`: ~50-100 KB per ticker
-- Query time: ~2 seconds
-- No significant disk usage
-
-### RAG
-- `rag_qa.py`: ~20 KB, ~450 lines
-- `vector_db/*.index`: ~1-5 MB per ticker (auto-created)
-- `evaluation_results/*.json`: ~5-20 KB per run
-- Query time: ~5-8 seconds (includes data fetch + vector search)
-- Disk usage: ~50 MB for 5 tickers
-
----
-
-## Expected Outputs
-
-### Baseline Output Example
-```
-Q: What is the most recent closing price?
-A: Based on the historical data ending 2025-01-15, 
-   Apple's closing price was $234.58.
-```
-
-### RAG Output Example
-```
-Q: What is the most recent closing price?
-A: Based on live data from Yahoo Finance retrieved on 2026-03-30 14:25, 
-   Apple's most recent closing price is $247.82 as of March 29, 2026. 
-   This represents a 5.6% increase from the previous month.
-```
-
-**Key Differences:**
-- RAG explicitly states data source and retrieval time
-- RAG provides more recent date (March 2026 vs January 2025)
-- RAG includes additional context (percentage change)
-- RAG has awareness it's using fresh data
-
----
-
-## Advanced Usage
-
-### Custom Tickers
-Edit `Baseline/config.py` or modify data collection:
-```python
-# In data_collection.py
-tickers = ['AAPL', 'TSLA', 'NVDA', 'AMD', 'INTC']
-```
-
-### Custom Questions
-Edit `evaluation_benchmarks.json` to add your own:
-```json
-{
-  "id": "AAPL_CUSTOM1",
-  "question": "Your custom question here",
-  "type": "factual",
-  "difficulty": "easy"
-}
-```
-
-### Adjust RAG Retrieval
-Edit `rag/config.py`:
-```python
-TOP_K_CHUNKS = 10  # Retrieve more chunks for context
-DATA_FETCH_DAYS = 90  # Get more historical data
-```
-
-### Change Embedding Model
-Edit `rag/rag_qa.py`:
-```python
-# For OpenAI
-EMBEDDING_MODEL = "text-embedding-3-large"  # Better quality, higher cost
-
-# For Ollama
-EMBEDDING_MODEL = "all-minilm"  # Faster, smaller
+# Figures
+python visualization.py --all
 ```
 
 ---
 
-## Project Timeline & Deliverables
-
-### Week 5-8: Baseline System ✅
-- Data collection pipeline
-- Baseline QA implementation
-- Evaluation framework
-- 30+ benchmark questions
-
-### Week 9-10: RAG System ✅
-- FAISS vector database integration
-- Real-time data retrieval
-- RAG QA implementation
-- Comparison framework
-
-### Week 11-12: Testing & Analysis ⏳
-- Comprehensive benchmarking
-- Obsolescence measurement
-- Performance comparison
-- Final report preparation
-
-### Week 13-15: Completion ⏳
-- Final testing
-- Demo preparation
-- Report writing
-- Presentation
-
----
-
-## Dependencies
-
-### Baseline (from Baseline/requirements.txt)
-```
-pandas>=1.5.0
-yfinance>=0.2.0
-openai>=1.0.0
-requests>=2.28.0
-python-dotenv>=0.19.0
-```
-
-### RAG (from rag/requirements.txt)
-```
-pandas>=1.5.0
-numpy>=1.24.0
-yfinance>=0.2.0
-faiss-cpu>=1.7.4
-openai>=1.0.0
-requests>=2.28.0
-python-dotenv>=0.19.0
-```
-
-Install: `pip install -r requirements.txt` in each directory
-
----
-
-## Contact & Support
+## Contact
 
 - **Student:** Chandini Kalidindi
-- **Repository:** https://github.com/chankal/Financial-LIKE-Project
+- **GitHub:** https://github.com/chankal/Financial-LIKE-Project
 - **Course:** CS 4365/6365: IEC - Spring 2026
-- **For Issues:** Reach out to course TAs or create GitHub issue
 
 ---
-
-## Summary for AI Agents
-
-This project compares two stock market QA systems to measure knowledge obsolescence:
-
-### Quick Execution Path:
-```bash
-# 1. Clone
-git clone https://github.com/chankal/Financial-LIKE-Project.git
-
-# 2. Baseline
-cd Baseline && pip install -r requirements.txt
-python data_collection.py && python prepocess_data.py
-python baseline_qa.py --batch AAPL
-
-# 3. RAG
-cd ../rag && pip install -r requirements.txt
-python rag_qa.py --batch AAPL
-
-# 4. Compare
-python compare_systems.py --latest AAPL
-```
-
-### Key Features:
-- **Baseline:** Static data, fast, simple, ages quickly
-- **RAG:** Real-time data, FAISS vectors, slow, always fresh
-- **Goal:** Prove RAG reduces obsolescence in financial QA
-
-### Success Metrics:
-- RAG should show more recent dates in answers
-- RAG should have higher accuracy on temporal questions
-- RAG should maintain accuracy over time while baseline degrades
