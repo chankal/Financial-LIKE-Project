@@ -61,8 +61,8 @@ else:
             model=model,
             input=text
         )
-        return np.array(response.embeddings[0].embedding)
-
+        # OpenAI returns embeddings in response.data[0].embedding
+        return np.array(response.data[0].embedding)
 
 def fetch_realtime_data(ticker, days=30):
     """

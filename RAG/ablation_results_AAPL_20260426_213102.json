@@ -1,0 +1,385 @@
+{
+  "full_system": {
+    "variant": "full_system",
+    "components": [
+      "realtime",
+      "vector_search",
+      "recency",
+      "verification",
+      "temporal"
+    ],
+    "results": [
+      {
+        "question": "What is the most recent closing price?",
+        "answer": "Based on the most recent data available (2026-04-24), the closing price of AAPL is $271.06.\n\nPlease note that this data is 69.1 hours old, which may not reflect the current market conditions. The confidence level for this data is LOW (0.60), indicating some uncertainty about its accuracy.\n\nIt's also worth mentioning that the most recent closing price I have is from April 24, but it's been 2 days since then, and the market may have changed since then.\n\n\ud83d\udccc Important Notes:\n- Please note that this data is from April 24, but it's been 2 days since then, and the market may have changed since then.\n- The confidence level for this data is LOW (0.60), indicating some uncertainty about its accuracy.",
+        "retrieved_chunks": [
+          {
+            "type": "daily",
+            "date": "2026-04-20",
+            "age_days": 6.879996391689814,
+            "importance": "high"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-22",
+            "age_days": 4.879996394583333,
+            "importance": "high"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-17",
+            "age_days": 9.879996390231481,
+            "importance": "medium"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-15",
+            "age_days": 11.879996387210648,
+            "importance": "medium"
+          },
+          {
+            "type": "weekly_summary",
+            "date": "2026-04-16",
+            "age_days": 10,
+            "importance": "medium"
+          }
+        ],
+        "retrieved_ids": [
+          "daily",
+          "daily",
+          "daily",
+          "daily",
+          "weekly_summary"
+        ],
+        "context": "retrieved_context",
+        "confidence": 0.5959402918815613
+      },
+      {
+        "question": "What was the highest price in the last 30 days?",
+        "answer": "Based on the most recent data available (2026-04-24), I can provide information on the highest price in the last 30 days.\n\nTo determine this, I'll consider the latest closing prices from the past 30 days. According to the provided historical data, the highest closing price in the last 30 days was $273.05, which occurred on 2026-04-20 (Monday).\n\nPlease note that the data freshness is medium with a confidence level of 0.63, indicating some uncertainty and potential for revision. Additionally, the data age ranges from 6.9 to 10 days old, depending on the specific date.\n\nIt's essential to acknowledge that this answer might not reflect the current market situation, as the data provided is from 69.2 hours ago (2026-04-24). If you're looking for information on today's or real-time prices, I would recommend checking a more recent source.\n\n\ud83d\udccc Important Notes:\n- Please note that the data provided is from 2.0 days ago (2026-04-20) and may not reflect the current market situation.\n- The answer might not be accurate for real-time prices or today's prices.",
+        "retrieved_chunks": [
+          {
+            "type": "daily",
+            "date": "2026-04-20",
+            "age_days": 6.882014864930555,
+            "importance": "high"
+          },
+          {
+            "type": "weekly_summary",
+            "date": "2026-04-16",
+            "age_days": 10,
+            "importance": "medium"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-17",
+            "age_days": 9.882014863298611,
+            "importance": "medium"
+          },
+          {
+            "type": "daily",
+            "date": "2026-03-27",
+            "age_days": 30.882014819259265,
+            "importance": "medium"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-15",
+            "age_days": 11.882014859953705,
+            "importance": "medium"
+          }
+        ],
+        "retrieved_ids": [
+          "daily",
+          "weekly_summary",
+          "daily",
+          "daily",
+          "daily"
+        ],
+        "context": "retrieved_context",
+        "confidence": 0.6259830594062805
+      },
+      {
+        "question": "What is the current trend?",
+        "answer": "Based on the most recent data available (2026-04-24), I can analyze the trend of Apple's stock price.\n\nThe closing price on 2026-04-24 was $271.06, which is a decrease of -0.62% from the previous day's close. This indicates a downward trend in the stock price over the past two days.\n\nHowever, it's essential to acknowledge that this data is 2.9 days old, and market conditions may have changed since then. The confidence level for this data is LOW (0.60), which suggests some uncertainty in the accuracy of the information.\n\nConsidering the intraday range on 2026-04-24 was $3.41, it's clear that there was significant price movement during the trading day. Additionally, the daily change of -0.62% may not accurately reflect the current market situation due to the data age and potential changes in market conditions.\n\nTherefore, while I can provide some insights based on the available data, I must emphasize that this analysis is subject to limitations due to the data freshness and potential for market changes since the last update.\n\n\ud83d\udccc Important Notes:\n- Please note that this analysis is subject to limitations due to the data freshness and potential for market changes since the last update.\n- The information provided is based on data available up to 2026-04-24, which may not reflect current market conditions.",
+        "retrieved_chunks": [
+          {
+            "type": "daily",
+            "date": "2026-04-24",
+            "age_days": 2.884043249803241,
+            "importance": "high"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-20",
+            "age_days": 6.884043242916667,
+            "importance": "high"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-22",
+            "age_days": 4.884043246469907,
+            "importance": "high"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-17",
+            "age_days": 9.884043241226852,
+            "importance": "medium"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-15",
+            "age_days": 11.88404323728009,
+            "importance": "medium"
+          }
+        ],
+        "retrieved_ids": [
+          "daily",
+          "daily",
+          "daily",
+          "daily",
+          "daily"
+        ],
+        "context": "retrieved_context",
+        "confidence": 0.5957726836204529
+      }
+    ],
+    "avg_confidence": 0.6058986783027649
+  },
+  "no_verification": {
+    "variant": "no_verification",
+    "components": [
+      "realtime",
+      "vector_search",
+      "recency",
+      "temporal"
+    ],
+    "results": [
+      {
+        "question": "What is the most recent closing price?",
+        "answer": "Based on the provided data, the most recent closing price for AAPL is $271.06, which is from April 24, 2026.\n\nPlease note that this data is 69.3 hours old, and while I can provide information based on this data, it may not reflect the current market conditions due to its relatively low freshness level (CONFIDENCE LEVEL: LOW).",
+        "retrieved_chunks": [
+          {
+            "type": "daily",
+            "date": "2026-04-20",
+            "age_days": 6.8861312771064815,
+            "importance": "high"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-22",
+            "age_days": 4.886131278842592,
+            "importance": "high"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-17",
+            "age_days": 9.88613127636574,
+            "importance": "medium"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-15",
+            "age_days": 11.88613127491898,
+            "importance": "medium"
+          },
+          {
+            "type": "weekly_summary",
+            "date": "2026-04-16",
+            "age_days": 10,
+            "importance": "medium"
+          }
+        ],
+        "retrieved_ids": [
+          "daily",
+          "daily",
+          "daily",
+          "daily",
+          "weekly_summary"
+        ],
+        "context": "retrieved_context",
+        "confidence": 0.5959402918815613
+      },
+      {
+        "question": "What was the highest price in the last 30 days?",
+        "answer": "Based on the most recent data available (2026-04-24), I can provide information on the highest price in the last 30 days.\n\nHowever, please note that the data freshness level is Medium with a confidence level of 0.63, which may indicate some uncertainty or potential limitations in the accuracy of the data.\n\nAccording to the historical data provided, the highest price in the last 30 days cannot be directly determined from the given information. The most recent high price was $273.06 on 2026-04-24, but it is not clear if this is the highest price within the last 30 days or just a single day's high.\n\nTo determine the highest price in the last 30 days, I would need more specific data that covers the entire period from 2026-04-24 to 2026-03-27. Unfortunately, the provided historical data does not cover this exact time frame.\n\nTherefore, based on the available information, I cannot accurately provide the highest price in the last 30 days.",
+        "retrieved_chunks": [
+          {
+            "type": "daily",
+            "date": "2026-04-20",
+            "age_days": 6.887875172511574,
+            "importance": "high"
+          },
+          {
+            "type": "weekly_summary",
+            "date": "2026-04-16",
+            "age_days": 10,
+            "importance": "medium"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-17",
+            "age_days": 9.887875127430556,
+            "importance": "medium"
+          },
+          {
+            "type": "daily",
+            "date": "2026-03-27",
+            "age_days": 30.887874404652777,
+            "importance": "medium"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-15",
+            "age_days": 11.887875118912037,
+            "importance": "medium"
+          }
+        ],
+        "retrieved_ids": [
+          "daily",
+          "weekly_summary",
+          "daily",
+          "daily",
+          "daily"
+        ],
+        "context": "retrieved_context",
+        "confidence": 0.6259830594062805
+      },
+      {
+        "question": "What is the current trend?",
+        "answer": "Based on the provided historical stock market data for AAPL, I'll attempt to analyze the current trend. However, please note that the most recent data is 69.3 hours old, which may not reflect the latest market conditions.\n\nAs of my knowledge cutoff on April 24, 2026, the closing price was $271.06. The stock has been experiencing a decline in value over the past few days, with a daily change of -0.62% on April 24 and -1.22% on April 17.\n\nLooking at the recent trend, I notice that the stock has been consolidating within a relatively narrow range, with an intraday range of $3.41 on April 24 and $5.58 on April 17. This suggests that the price movement is not extremely volatile, but rather stagnant.\n\nIt's also worth noting that the daily change on April 22 was +2.00%, which might indicate a brief upward momentum. However, this trend has been reversed since then, with a decline of -0.62% on April 24.\n\nConsidering these factors, I would say that the current trend is bearish, with a leaning towards further price declines. However, please keep in mind that this analysis is based on historical data and may not accurately reflect the current market conditions due to the limited freshness of the data.\n\nAdditionally, it's essential to acknowledge the limitations of this analysis, given the data's age (2.9 days old) and potential for recent events or news to have impacted the stock price since then.",
+        "retrieved_chunks": [
+          {
+            "type": "daily",
+            "date": "2026-04-24",
+            "age_days": 2.889575143912037,
+            "importance": "high"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-20",
+            "age_days": 6.889575136435185,
+            "importance": "high"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-22",
+            "age_days": 4.889575140300926,
+            "importance": "high"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-17",
+            "age_days": 9.889575134652778,
+            "importance": "medium"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-15",
+            "age_days": 11.889575131215276,
+            "importance": "medium"
+          }
+        ],
+        "retrieved_ids": [
+          "daily",
+          "daily",
+          "daily",
+          "daily",
+          "daily"
+        ],
+        "context": "retrieved_context",
+        "confidence": 0.5957726836204529
+      }
+    ],
+    "avg_confidence": 0.6058986783027649
+  },
+  "no_recency": {
+    "variant": "no_recency_weighting",
+    "components": [
+      "realtime",
+      "vector_search",
+      "verification",
+      "temporal"
+    ],
+    "results": [
+      {
+        "question": "What is the most recent closing price?",
+        "answer": "The most recent closing price is $271.06, as reported on 2026-04-24.\n\nThis value is consistent with the provided real-time data and supersedes any historical context information that may suggest a different closing price for the same date (e.g., $266.43 from 2026-04-15).",
+        "retrieved_chunks": [],
+        "retrieved_ids": [],
+        "context": "",
+        "confidence": 0.75
+      },
+      {
+        "question": "What was the highest price in the last 30 days?",
+        "answer": "Based on the REAL-TIME data provided above, I can answer your question.\n\nThe highest price in the last 30 days was $273.06, which occurred on April 24, 2026 (Date 40). This is the most recent trading information available.\n\nComparing this to historical context, it's worth noting that the highest price in the past 30 days was $273.06, which is higher than the highest price of $272.30 on April 17, 2026 (Date 38).\n\nIt's also worth mentioning that the current price range ($5.36) is lower than the previous price range of $5.53 on March 10, 2026 (Date 32), indicating a potential decrease in volatility.\n\nPlease note that these values are based on the REAL-TIME data provided above and may not reflect any changes or updates after this point.",
+        "retrieved_chunks": [],
+        "retrieved_ids": [],
+        "context": "",
+        "confidence": 0.75
+      },
+      {
+        "question": "What is the current trend?",
+        "answer": "Based on the REAL-TIME data provided as of 2026-04-24 21:30, I can analyze the current trend.\n\nThe closing price for April 24 is $271.06, which is higher than the previous day's close ($269.65). This indicates an upward trend in the stock price.\n\nComparing this to the historical context, we can see that the stock has experienced various trends over different weeks:\n\n- In the week of 2026-04-08 to 2026-04-16, the closing price was $263.40, which is lower than the current close.\n- The recent trend from April 23 ($273.429993) to April 24 ($271.059998) shows a slight decrease in value.\n\nHowever, considering the most recent data (April 24), the stock has closed at $271.06, which is above its opening price of $269.65 and higher than the week's low ($256.07).\n\nTherefore, based on the REAL-TIME data as of April 24, 2026, I would say that the current trend is an upward trend, but with a slight decrease in value from the previous day.\n\nDate: 2026-04-24",
+        "retrieved_chunks": [],
+        "retrieved_ids": [],
+        "context": "",
+        "confidence": 0.75
+      }
+    ],
+    "avg_confidence": 0.75
+  },
+  "no_realtime": {
+    "variant": "no_realtime_data",
+    "components": [
+      "vector_search",
+      "recency",
+      "verification",
+      "temporal"
+    ],
+    "results": [],
+    "avg_confidence": 0
+  },
+  "no_vector": {
+    "variant": "no_vector_search",
+    "components": [
+      "realtime",
+      "verification",
+      "temporal"
+    ],
+    "results": [
+      {
+        "question": "What is the most recent closing price?",
+        "answer": "Simulated answer using last 30 rows",
+        "retrieved_chunks": [],
+        "retrieved_ids": [],
+        "context": "",
+        "confidence": 0.7
+      },
+      {
+        "question": "What was the highest price in the last 30 days?",
+        "answer": "Simulated answer using last 30 rows",
+        "retrieved_chunks": [],
+        "retrieved_ids": [],
+        "context": "",
+        "confidence": 0.7
+      },
+      {
+        "question": "What is the current trend?",
+        "answer": "Simulated answer using last 30 rows",
+        "retrieved_chunks": [],
+        "retrieved_ids": [],
+        "context": "",
+        "confidence": 0.7
+      }
+    ],
+    "avg_confidence": 0.6999999999999998
+  },
+  "baseline": {
+    "variant": "baseline",
+    "components": [],
+    "results": [],
+    "avg_confidence": 0
+  }
+}

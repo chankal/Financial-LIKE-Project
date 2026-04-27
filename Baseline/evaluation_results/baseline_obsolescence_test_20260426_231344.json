@@ -1,0 +1,60 @@
+{
+  "ticker": "AAPL",
+  "system": "BASELINE",
+  "timestamp": "2026-04-26T23:13:44.560131",
+  "data_age_days": 2.7,
+  "results": [
+    {
+      "question": "What is the current stock price?",
+      "answer": "Based on the historical data provided, I can tell you that the current stock price is not available beyond 2023-12-29. The most recent closing price is $190.550461 for AAPL on 2023-12-29.",
+      "asks_about_current": true,
+      "claims_current": true,
+      "warns_about_age": false,
+      "shows_confidence": false,
+      "obsolescence_problem": true
+    },
+    {
+      "question": "What was the highest price in the last 30 days?",
+      "answer": "Based on the historical data provided, the highest price in the last 30 days (ending on 2023-12-29) was $192.401229, which occurred on December 28, 2023.",
+      "asks_about_current": false,
+      "claims_current": false,
+      "warns_about_age": false,
+      "shows_confidence": false,
+      "obsolescence_problem": false
+    },
+    {
+      "question": "What is the current trend?",
+      "answer": "Based on the historical stock data provided for AAPL ending on 2023-12-29, it appears that the current trend is a decline in prices. \n\nFrom 2023-12-28 to 2023-12-29, the closing price decreased from $191.589691 to $190.550461, representing a decrease of approximately $39.13923.\n\nIt's essential to note that this analysis only considers data up to 2023-12-29 and does not account for future market fluctuations or trends beyond this date.",
+      "asks_about_current": true,
+      "claims_current": true,
+      "warns_about_age": false,
+      "shows_confidence": false,
+      "obsolescence_problem": true
+    },
+    {
+      "question": "What was the trading volume on the most recent day?",
+      "answer": "The trading volume on the most recent day (2023-12-29) was 426,72100.",
+      "asks_about_current": true,
+      "claims_current": false,
+      "warns_about_age": false,
+      "shows_confidence": false,
+      "obsolescence_problem": false
+    },
+    {
+      "question": "How does the current price compare to last week?",
+      "answer": "Based on the historical data provided, I can compare the current price of AAPL (as of 2023-12-29) to last week's prices.\n\nThe closing price as of 2023-12-29 is $190.550461.\n\nLast week's prices are not explicitly stated in the data, but we can look at the previous trading days:\n\n* 2023-12-22: $192.678360\n* 2023-12-21: $192.678360 (same as above)\n* 2023-12-20: $192.826828\n\nIt appears that the price was slightly higher on December 20, but lower on December 21 and 22 compared to last week's prices.\n\nHowever, since my data only goes up to 2023-12-29, I cannot provide a comprehensive comparison of last week's prices beyond this date.",
+      "asks_about_current": true,
+      "claims_current": true,
+      "warns_about_age": false,
+      "shows_confidence": false,
+      "obsolescence_problem": true
+    }
+  ],
+  "summary": {
+    "total_questions": 5,
+    "obsolescence_problems": 3,
+    "obsolescence_rate": 0.6,
+    "asks_about_current": 4,
+    "claims_current_without_warning": 3
+  }
+}

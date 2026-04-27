@@ -1,0 +1,55 @@
+{
+  "full_system": {
+    "variant": "full_system",
+    "components": [
+      "realtime",
+      "vector_search",
+      "recency",
+      "verification",
+      "temporal"
+    ],
+    "results": [
+      {
+        "question": "What is the most recent closing price?",
+        "answer": "Based on the provided data, the most recent closing price for AAPL is $271.06, which is from April 24, 2026.\n\nPlease note that this data is 68.3 hours old, and the confidence level is LOW (0.60), indicating some uncertainty in the accuracy of the information. Additionally, the data is 2.0 days old, which may not reflect the latest market conditions.\n\nIt's also worth mentioning that there are limitations to the freshness of this data, as it was last updated 68.3 hours ago. However, I will provide the answer based on the available information.\n\n\ud83d\udccc Important Notes:\n- The answer may not reflect current market conditions due to its 2.0-day-old data cutoff date.\n- Please note that the data is 68.3 hours old and has a LOW confidence level of 0.60.",
+        "retrieved_chunks": [
+          {
+            "type": "daily",
+            "date": "2026-04-20",
+            "age_days": 6.847421899409722,
+            "importance": "high"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-22",
+            "age_days": 4.847421902222222,
+            "importance": "high"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-17",
+            "age_days": 9.847421898032408,
+            "importance": "medium"
+          },
+          {
+            "type": "daily",
+            "date": "2026-04-15",
+            "age_days": 11.847421895243057,
+            "importance": "medium"
+          },
+          {
+            "type": "weekly_summary",
+            "date": "2026-04-16",
+            "age_days": 10,
+            "importance": "medium"
+          }
+        ],
+        "retrieved_ids": [
+          "daily",
+          "daily",
+          "daily",
+          "daily",
+          "weekly_summary"
+        ],
+        "context": "retrieved_context",
+        "confidence": 

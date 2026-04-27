@@ -1,0 +1,15 @@
+# Vector databases (large files)
+vector_db/*.faiss
+vector_db/*.index
+
+# Evaluation results (regenerable)
+evaluation_results/*.json
+evaluation_results/*.md
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment
+.env
